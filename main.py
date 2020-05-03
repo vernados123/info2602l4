@@ -11,7 +11,7 @@ from models import db, User, Todo
 
 ''' Begin boilerplate code '''
 def create_app():
-  app = Flask(__name__)
+  app = Flask(__name__, static_url_path='')
   app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
   app.config['SECRET_KEY'] = "MYSECRET"
   app.config['JWT_EXPIRATION_DELTA'] = timedelta(days = 7) 
@@ -43,13 +43,9 @@ jwt = JWT(app, authenticate, identity)
 ''' End JWT Setup '''
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-  return app.send_static_file('index.html')
-
-@app.route('/signup', methods=['GET'])
-def signup_page():
-  return app.send_static_file('signup.html')
+ return app.send_static_file('index.html')
 
 
 @app.route('/signup', methods=['POST'])
