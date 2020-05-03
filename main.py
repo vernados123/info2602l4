@@ -47,11 +47,6 @@ jwt = JWT(app, authenticate, identity)
 def index():
   return app.send_static_file('index.html')
 
-@app.route('/app')
-def client_app():
-  return app.send_static_file('app.html')
-
-
 @app.route('/signup', methods=['GET'])
 def signup_page():
   return app.send_static_file('signup.html')
