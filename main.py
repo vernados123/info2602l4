@@ -7,6 +7,8 @@ from datetime import timedelta
 
 from models import db, User, Todo
 
+# Complete Lab 5
+
 ''' Begin boilerplate code '''
 def create_app():
   app = Flask(__name__)
