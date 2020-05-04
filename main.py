@@ -73,7 +73,7 @@ def create_todo():
   todo = Todo(text=data['text'], userid=current_identity.id, done=False)
   db.session.add(todo)
   db.session.commit()
-  return json.dumps(todo.id), 201 # return data and set the status code
+  return json.dumps({ 'id' : todo.id}), 201 # return data and set the status code
 
 @app.route('/todo', methods=['GET'])
 @jwt_required()
