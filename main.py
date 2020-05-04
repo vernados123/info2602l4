@@ -58,8 +58,8 @@ def signup():
     db.session.commit() # save user
   except IntegrityError: # attempted to insert a duplicate user
     db.session.rollback()
-    return json.dumps({ 'error:' 'username or email already exists'}) # error message
-  return json.dumps({ 'message' :' user created'}) # success
+    return json.dumps({ "error" : "username or email already exists"}) # error message
+  return json.dumps({ "message" : "user created"}) # success
 
 @app.route('/identify')
 @jwt_required()
