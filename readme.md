@@ -2,7 +2,7 @@
 
 # Based on [Lab 5](https://nmendez.app/info2602/lab5/#0)
 
-# Creating & Linking your own github repository
+## Creating & Linking your own github repository
 Git is used to perform source control. It helps teams manage code bases and merge togher their contributions.
 Github is a free Git server for developers to host their git repositories.
 
@@ -30,7 +30,7 @@ Paste and run the command in gitpod.
 
 Your workspace should now be linked to your repository
 
-# Pushing changes to Git
+## Pushing changes to Git
 Now the workspace is linked with a git repository it will track all the changes you make to its files.
 Run the following command to select which files will be **staged** (tracked for changes)
 
