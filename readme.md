@@ -1,8 +1,6 @@
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/uwidcit/info2602lab5.git) 
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/uwidcit/info2602lab5.git)
 
-# Before you start
-Create a heroku account by following this [link](https://signup.heroku.com/login)
-You will also need a github account.
+# Based on [Lab 5](https://nmendez.app/info2602/lab5/#0)
 
 # Creating & Linking your own github repository
 Git is used to perform source control. It helps teams manage code bases and merge togher their contributions.
@@ -31,19 +29,6 @@ git remote add origin https://github.com/<username>/<reponame>.git
 Paste and run the command in gitpod.
 
 Your workspace should now be linked to your repository
-
-# Heroku Setup
-To login to heroku open a new terminal in gitpod and enter run the following command:
-
-```
-heroku login --interactive
-```
-You will then be prompted to enter you heroku credentials. Then to create a new heroku application run the following command:
-
-```
-heroku create
-```
-The app should be created with a random name and can be seen on your [heroku dashboard](https://dashboard.heroku.com/apps/)
 
 # Pushing changes to Git
 Now the workspace is linked with a git repository it will track all the changes you make to its files.
