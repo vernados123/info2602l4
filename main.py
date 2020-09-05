@@ -88,7 +88,7 @@ def get_todos():
 def get_todo(id):
   todo = Todo.query.filter_by(userid=current_identity.id, id=id).first()
   if todo == None:
-    return 'Invalid id or unauthorized'
+    return json.dumps({'error':'Invalid id or unauthorized'})
   return json.dumps(todo.toDict())
 
 @app.route('/todo/<id>', methods=['PUT'])
@@ -96,15 +96,15 @@ def get_todo(id):
 def update_todo(id):
   todo = Todo.query.filter_by(userid=current_identity.id, id=id).first()
   if todo == None:
-    return 'Invalid id or unauthorized'
+    return json.dumps({'error':'Invalid id or unauthorized'})
   data = request.get_json()
-  if 'text' in data: # we can't assume what the user is updating wo we check for the field
+  if 'text' in data: # we can't assume what the user is updating so we check for the field
     todo.text = data['text']
   if 'done' in data:
     todo.done = data['done']
   db.session.add(todo)
   db.session.commit()
-  return 'Updated', 201
+  return json.dumps({'status':'Updated'}), 201
 
 @app.route('/todo/<id>', methods=['DELETE'])
 @jwt_required()
@@ -114,7 +114,7 @@ def delete_todo(id):
     return 'Invalid id or unauthorized'
   db.session.delete(todo) # delete the object
   db.session.commit()
-  return 'Deleted', 204
+  return json.dumps({'status':'Deleted'}), 204
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=8080, debug=True)
