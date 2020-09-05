@@ -74,7 +74,7 @@ def create_todo():
   todo = Todo(text=data['text'], userid=current_identity.id, done=False)
   db.session.add(todo)
   db.session.commit()
-  return json.dumps({ 'id' : todo.id}), 201 # return data and set the status code
+  return json.dumps({ 'id' : todo.id}), 201 # return data and set the message code
 
 @app.route('/todo', methods=['GET'])
 @jwt_required()
@@ -104,7 +104,7 @@ def update_todo(id):
     todo.done = data['done']
   db.session.add(todo)
   db.session.commit()
-  return json.dumps({'status':'Updated'}), 201
+  return json.dumps({'message':'Updated'}), 201
 
 @app.route('/todo/<id>', methods=['DELETE'])
 @jwt_required()
@@ -114,7 +114,7 @@ def delete_todo(id):
     return 'Invalid id or unauthorized'
   db.session.delete(todo) # delete the object
   db.session.commit()
-  return json.dumps({'status':'Deleted'}), 204
+  return json.dumps({'message':'Deleted'}), 200
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=8080, debug=True)
