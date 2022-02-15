@@ -1,5 +1,4 @@
-import json
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_jwt import JWT, jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
@@ -48,7 +47,6 @@ jwt = JWT(app, authenticate, identity)
 def index():
  return app.send_static_file('index.html')
 
-
 @app.route('/signup', methods=['POST'])
 def signup():
   userdata = request.get_json() # get userdata
@@ -59,44 +57,52 @@ def signup():
     db.session.commit() # save user
   except IntegrityError: # attempted to insert a duplicate user
     db.session.rollback()
-    return json.dumps({ "error" : "username or email already exists"}) # error message
-  return json.dumps({ "message" : "user created"}) # success
+    return jsonify({ "error" : "username or email already exists"}) # error message
+  return jsonify({ "message" : "user created"}) # success
 
 @app.route('/identify')
 @jwt_required()
 def protected():
-    return json.dumps(current_identity.username)
+  user = User.query.get(current_identity.id)
+  return jsonify(user.toDict())
 
-@app.route('/todo', methods=['POST'])
+@app.route('/users', methods=['GET'])
+def get_users():
+  users = User.query.all()
+  users_list = [ user.toDict() for user in users ] 
+  # convert user objects to list of dictionaries
+  return jsonify({ "num_users": len(users_list), "users": users_list })
+
+@app.route('/todos', methods=['POST'])
 @jwt_required()
 def create_todo():
   data = request.get_json()
   todo = Todo(text=data['text'], userid=current_identity.id, done=False)
   db.session.add(todo)
   db.session.commit()
-  return json.dumps({ 'id' : todo.id}), 201 # return data and set the message code
+  return jsonify({ 'id' : todo.id}), 201 # return data and set the message code
 
-@app.route('/todo', methods=['GET'])
+@app.route('/todos', methods=['GET'])
 @jwt_required()
 def get_todos():
   todos = Todo.query.filter_by(userid=current_identity.id).all()
   todos = [todo.toDict() for todo in todos] # list comprehension which converts todo objects to dictionaries
-  return json.dumps(todos)
+  return jsonify(todos)
 
-@app.route('/todo/<id>', methods=['GET'])
+@app.route('/todos/<id>', methods=['GET'])
 @jwt_required()
 def get_todo(id):
   todo = Todo.query.filter_by(userid=current_identity.id, id=id).first()
   if todo == None:
-    return json.dumps({'error':'Invalid id or unauthorized'})
-  return json.dumps(todo.toDict())
+    return jsonify({'error':'Invalid id or unauthorized'})
+  return jsonify(todo.toDict())
 
-@app.route('/todo/<id>', methods=['PUT'])
+@app.route('/todos/<id>', methods=['PUT'])
 @jwt_required()
 def update_todo(id):
   todo = Todo.query.filter_by(userid=current_identity.id, id=id).first()
   if todo == None:
-    return json.dumps({'error':'Invalid id or unauthorized'})
+    return jsonify({'error':'Invalid id or unauthorized'})
   data = request.get_json()
   if 'text' in data: # we can't assume what the user is updating so we check for the field
     todo.text = data['text']
@@ -104,9 +110,9 @@ def update_todo(id):
     todo.done = data['done']
   db.session.add(todo)
   db.session.commit()
-  return json.dumps({'message':'Updated'}), 201
+  return jsonify({'message':'Updated'}), 201
 
-@app.route('/todo/<id>', methods=['DELETE'])
+@app.route('/todos/<id>', methods=['DELETE'])
 @jwt_required()
 def delete_todo(id):
   todo = Todo.query.filter_by(userid=current_identity.id, id=id).first()
@@ -114,7 +120,20 @@ def delete_todo(id):
     return 'Invalid id or unauthorized'
   db.session.delete(todo) # delete the object
   db.session.commit()
-  return json.dumps({'message':'Deleted'}), 200
+  return jsonify({'message':'Deleted'}), 200
+
+@app.route('/stats/todos', methods=['GET'])
+@jwt_required()
+def get_todo_stats():
+  user = User.query.get(current_identity.id)
+  if user:
+    return jsonify({
+      "num_todos": user.get_num_todos(),
+      "num_done": user.get_done_todos()
+    })
+  else :
+    return jsonify({'message': 'User not found'}), 404
+
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=8080, debug=True)
