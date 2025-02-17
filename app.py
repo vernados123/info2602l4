@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, flash, redirect, url_for
+from flask import Flask, request, render_template, flash, redirect, url_for, jsonify
 from functools import wraps
 from models import db, Admin, RegularUser, Todo, User
 
